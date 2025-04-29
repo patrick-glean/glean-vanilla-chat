@@ -4,17 +4,9 @@ A simple, embeddable chat application built with vanilla TypeScript.
 
 ## Live Demo
 
-You can see the chat in action right here in the README:
+[![Glean Chat Demo](https://patrick-glean.github.io/glean-vanilla-chat/screenshot.png)](https://patrick-glean.github.io/glean-vanilla-chat/)
 
-<div align="center">
-  <iframe 
-    src="https://patrick-glean.github.io/glean-vanilla-chat/"
-    width="400"
-    height="600"
-    style="border: 1px solid #ccc; border-radius: 8px;"
-    title="Glean Chat Demo"
-  ></iframe>
-</div>
+Click the image above to try the live demo!
 
 ## Features
 

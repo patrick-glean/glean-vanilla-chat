@@ -1,1 +1,52 @@
- 
+# Changelog
+
+## [Unreleased]
+
+### Added
+- Initial project setup with TypeScript
+- Basic chat interface with three stacked boxes
+- Message history tracking
+- Welcome message animation
+- Hot reloading support
+- GitHub Pages deployment configuration
+- Automated screenshot generation for README
+- Live demo link in README
+
+### Structure
+- Header box: Contains the chat title
+- Message box: Displays chat history with scrolling
+- Input box: Contains message input and send button
+
+### Features
+- Real-time message updates
+- Message history tracking with timestamps
+- Animated welcome message
+- Responsive design
+- Easy embedding capability
+- Hot reloading for development
+- Automated documentation with screenshots
+
+### Technical Decisions
+- Using vanilla TypeScript for minimal dependencies
+- ES2020 as target for modern JavaScript features
+- Modular architecture for easy extension
+- CSS animations for smooth transitions
+- Local state management for message history
+- GitHub Pages for free hosting
+- Puppeteer for automated screenshots
+
+### Infrastructure
+- Hot reloading with nodemon
+- TypeScript compilation
+- Automated build process
+- GitHub Pages deployment
+- Screenshot generation for documentation
+
+### Next Steps
+- Add message persistence
+- Implement real API integration
+- Add typing indicators
+- Improve error handling
+- Add message search functionality
+- Add unit tests
+- Add CI/CD pipeline 
