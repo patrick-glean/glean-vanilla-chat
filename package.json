@@ -4,7 +4,7 @@
   "description": "A simple embeddable chat application",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc && cp src/styles.css dist/",
+    "build": "tsc && cp src/styles.css dist/ && cp index.html dist/",
     "watch": "tsc -w",
     "start": "http-server -p 8080 -o",
     "dev": "concurrently \"nodemon\" \"http-server -p 8080 -o\"",
