@@ -1,23 +1,18 @@
 {
   "name": "glean-vanilla-chat",
   "version": "1.0.0",
-  "description": "A simple embeddable chat application",
-  "main": "dist/index.js",
+  "description": "A vanilla JavaScript chat application",
+  "type": "module",
   "scripts": {
-    "build": "tsc && cp src/styles.css dist/ && cp index.html dist/ && node scripts/screenshot.js",
-    "watch": "tsc -w",
-    "start": "http-server -p 8080 -o",
-    "dev": "concurrently \"nodemon\" \"http-server -p 8080 -o\"",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist"
+    "build": "rm -rf -f dist/* && tsc && cp src/styles.css dist/ && cp index.html dist/ && node scripts/screenshot.js",
+    "dev": "nodemon --watch 'src/**/*.ts' --exec 'npm run build' & http-server dist"
+  },
+  "dependencies": {
+    "puppeteer": "^21.0.0"
   },
   "devDependencies": {
-    "typescript": "^5.3.3",
-    "http-server": "^14.1.1",
-    "concurrently": "^8.2.2",
-    "gh-pages": "^6.1.1",
-    "nodemon": "^3.0.3",
-    "ts-node": "^10.9.2",
-    "puppeteer": "^22.0.0"
+    "nodemon": "^3.0.0",
+    "typescript": "^5.0.0",
+    "http-server": "^14.0.0"
   }
 } 

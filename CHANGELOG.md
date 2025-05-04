@@ -11,6 +11,16 @@
 - GitHub Pages deployment configuration
 - Automated screenshot generation for README
 - Live demo link in README
+- REST API integration with service layer
+- API configuration management
+- Error handling for API requests
+- Message history loading from API
+- Error message styling and animations
+- API token management component
+- Token input and storage functionality
+- Bearer token authentication
+- Token-related error handling
+- Token UI styling and animations
 
 ### Structure
 - Header box: Contains the chat title
@@ -34,6 +44,14 @@
 - Local state management for message history
 - GitHub Pages for free hosting
 - Puppeteer for automated screenshots
+- Used fetch API for HTTP requests
+- Implemented timeout handling
+- Added proper error types and handling
+- Used environment variables for configuration
+- Used localStorage for token persistence
+- Implemented secure token input with password type
+- Added token validation before API calls
+- Created separate token manager component
 
 ### Infrastructure
 - Hot reloading with nodemon

@@ -1,60 +1,27 @@
-const puppeteer = require('puppeteer');
-const path = require('path');
+import puppeteer from 'puppeteer';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 async function takeScreenshot() {
-    let browser;
-    try {
-        browser = await puppeteer.launch({
-            headless: "new",
-            args: ['--no-sandbox', '--disable-setuid-sandbox']
-        });
-        const page = await browser.newPage();
-        
-        // Set viewport size to match chat container
-        await page.setViewport({
-            width: 400,
-            height: 600
-        });
-
-        // Load the local file
-        const filePath = `file:${path.join(__dirname, '../dist/index.html')}`;
-        console.log('Loading file:', filePath);
-        await page.goto(filePath, {
-            waitUntil: 'networkidle0',
-            timeout: 30000
-        });
-
-        // Wait for the chat container to be visible
-        await page.waitForSelector('.chat-container', { visible: true, timeout: 5000 });
-        
-        // Wait a bit for the welcome message
-        await new Promise(resolve => setTimeout(resolve, 2000));
-
-        // Take screenshot
-        const screenshotPath = path.join(__dirname, '../dist/screenshot.png');
-        console.log('Taking screenshot to:', screenshotPath);
-        await page.screenshot({
-            path: screenshotPath,
-            clip: {
-                x: 0,
-                y: 0,
-                width: 400,
-                height: 600
-            }
-        });
-        console.log('Screenshot taken successfully');
-
-    } catch (error) {
-        console.error('Error taking screenshot:', error);
-        throw error;
-    } finally {
-        if (browser) {
-            await browser.close();
-        }
-    }
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+    
+    const filePath = join(__dirname, '..', 'dist', 'index.html');
+    await page.goto(`file://${filePath}`);
+    
+    // Wait for the chat container to be visible
+    await page.waitForSelector('#chat-container');
+    
+    // Take screenshot
+    await page.screenshot({ 
+        path: join(__dirname, '..', 'dist', 'screenshot.png'),
+        fullPage: true
+    });
+    
+    await browser.close();
 }
 
-takeScreenshot().catch(error => {
-    console.error('Failed to take screenshot:', error);
-    process.exit(1);
-}); 
+takeScreenshot().catch(console.error); 
