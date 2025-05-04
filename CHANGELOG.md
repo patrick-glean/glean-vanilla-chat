@@ -3,6 +3,31 @@
 ## [Unreleased]
 
 ### Added
+- Modular project structure with clear separation of concerns
+- Token management system with secure storage
+- TypeScript type safety throughout the application
+- Proper error handling and user feedback
+- Responsive UI with improved styling
+
+### Changed
+- Restructured project into modular components
+- Improved build process for TypeScript compilation
+- Enhanced token input field visibility and styling
+- Updated module imports and exports for better organization
+
+### Fixed
+- Token input field visibility issues
+- Module import/export circular dependencies
+- Build process file copying
+- TypeScript compilation and type errors
+
+## [Initial Setup]
+- Basic chat application structure
+- TypeScript configuration
+- Development environment setup
+- Basic styling and layout
+
+### Added
 - Initial project setup with TypeScript
 - Basic chat interface with three stacked boxes
 - Message history tracking

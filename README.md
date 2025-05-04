@@ -1,6 +1,67 @@
 # Glean Vanilla Chat
 
-A simple, embeddable chat application built with vanilla TypeScript.
+A vanilla JavaScript/TypeScript chat application with modular architecture.
+
+## Project Structure
+
+```
+src/
+├── components/           # UI Components
+│   ├── config-panel.ts   # Token configuration UI
+│   └── token-storage.ts  # Token storage management
+├── services/            # Service Layer
+│   └── api.ts           # API communication service
+├── chat.ts              # Main chat application
+├── token.ts             # Token manager initialization
+├── types.ts             # Shared TypeScript types
+├── config.ts            # Application configuration
+└── styles.css           # Global styles
+```
+
+## Key Components
+
+### Token Management
+- `TokenStorage`: Handles token persistence in localStorage
+- `ConfigPanel`: UI for token input and management
+- `TokenManager`: Initializes and coordinates token-related components
+
+### Chat Application
+- `ChatApp`: Main chat interface and message handling
+- `ApiService`: Handles API communication with proper token management
+
+### Configuration
+- `config.ts`: Centralized configuration management
+- `types.ts`: Shared TypeScript interfaces and types
+
+## Development
+
+### Setup
+```bash
+npm install
+```
+
+### Development Server
+```bash
+npm run dev
+```
+
+### Build
+```bash
+npm run build
+```
+
+## Key Features
+- Modular architecture with clear separation of concerns
+- TypeScript for type safety
+- Token management with secure storage
+- Responsive UI with proper styling
+- Error handling and user feedback
+
+## Notes
+- Token UI can be removed in production by removing the token-manager-container
+- API token is stored securely in localStorage
+- All components are properly typed with TypeScript
+- Build process handles TypeScript compilation and file copying
 
 ## Live Demo
 
@@ -17,27 +78,6 @@ Click the image above to try the live demo!
 - Responsive design
 - Easy embedding capability
 - Hot reloading for development
-
-## Development
-
-1. Install dependencies:
-```bash
-npm install
-```
-
-2. Start the development server:
-```bash
-npm run dev
-```
-
-This will start a local server at http://localhost:8080 and watch for TypeScript changes.
-
-## Building
-
-To build the project:
-```bash
-npm run build
-```
 
 ## Deployment to GitHub Pages
 
@@ -58,22 +98,6 @@ To embed the chat in your website, add the following to your HTML:
 ```html
 <div id="glean-chat-container"></div>
 <script type="module" src="https://patrick-glean.github.io/glean-vanilla-chat/index.js"></script>
-```
-
-## Project Structure
-
-```
-glean-vanilla-chat/
-├── src/
-│   ├── index.ts      # Main chat application logic
-│   └── styles.css    # Chat interface styling
-├── dist/             # Built files (generated)
-├── index.html        # Main HTML file
-├── package.json      # Project configuration
-├── tsconfig.json     # TypeScript configuration
-├── nodemon.json      # Hot reloading configuration
-├── CHANGELOG.md      # Project history
-└── RULES.md         # Development guidelines
 ```
 
 ## License
