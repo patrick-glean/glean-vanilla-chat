@@ -38,10 +38,24 @@ class ChatApp {
     }
 
     private async initializeChat() {
+        // Clear input on focus
+        this.inputField.addEventListener('focus', () => {
+            if (this.inputField.value === '') {
+                this.inputField.placeholder = '';
+            }
+        });
+
+        this.inputField.addEventListener('blur', () => {
+            if (this.inputField.value === '') {
+                this.inputField.placeholder = 'Type your message...';
+            }
+        });
+
         this.inputField.addEventListener('keypress', async (e) => {
             if (e.key === 'Enter' && this.inputField.value.trim()) {
                 await this.sendMessage(this.inputField.value);
                 this.inputField.value = '';
+                this.inputField.placeholder = 'Type your message...';
             }
         });
 
@@ -49,6 +63,7 @@ class ChatApp {
             if (this.inputField.value.trim()) {
                 await this.sendMessage(this.inputField.value);
                 this.inputField.value = '';
+                this.inputField.placeholder = 'Type your message...';
             }
         });
     }

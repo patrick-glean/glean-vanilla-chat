@@ -8,6 +8,8 @@ class TokenManager {
         // Only initialize the UI if the container exists
         const tokenManagerContainer = document.getElementById('token-manager-container');
         if (tokenManagerContainer) {
+            // Clear any existing content
+            tokenManagerContainer.innerHTML = '';
             this.configPanel = new ConfigPanel();
             tokenManagerContainer.appendChild(this.configPanel.getPanel());
         }
