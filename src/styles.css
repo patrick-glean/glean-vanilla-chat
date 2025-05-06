@@ -137,17 +137,21 @@ body {
     gap: 8px;
     margin: 10px 0;
     width: 100%;
+    position: relative;
 }
 
 .token-input-container input {
     flex: 1;
     padding: 8px 12px;
+    padding-right: 40px;
     border: 1px solid #dee2e6;
     border-radius: 4px;
     font-size: 14px;
     outline: none;
     min-height: 36px;
     color: #333;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .token-input-container input:focus {
@@ -161,42 +165,31 @@ body {
 
 .reveal-button {
     position: absolute;
-    right: 0;
-    top: 0;
-    height: 100%;
-    padding: 0 12px;
-    background-color: #f8f9fa;
-    color: #495057;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
     border: none;
-    border-left: 1px solid #dee2e6;
+    padding: 4px 8px;
     cursor: pointer;
-    font-size: 14px;
-    transition: all 0.2s;
-    min-width: 40px;
+    color: #6c757d;
+    font-size: 16px;
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 2;
+    width: 32px;
+    height: 32px;
+    border-radius: 4px;
+    transition: background-color 0.2s;
 }
 
 .reveal-button:hover {
-    background-color: #e9ecef;
+    background-color: #f8f9fa;
 }
 
 .reveal-button:focus {
     outline: none;
     box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
-}
-
-.reveal-button::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: white;
-    z-index: -1;
 }
 
 .token-save-button {
