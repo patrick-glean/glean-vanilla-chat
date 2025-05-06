@@ -3,6 +3,7 @@ import tokenStorage from './token-storage.js';
 class ConfigPanel {
     private panel!: HTMLElement;
     private tokenInput!: HTMLInputElement;
+    private backendUrlInput!: HTMLInputElement;
     private saveButton!: HTMLButtonElement;
     private tokenStatus!: HTMLElement;
     private revealButton!: HTMLButtonElement;
@@ -23,13 +24,19 @@ class ConfigPanel {
         this.panel.innerHTML = `
             <h3>Configuration</h3>
             <form class="config-section" onsubmit="return false;">
-                <label for="api-token-${this.uniqueId}">API Token:</label>
-                <div class="token-input-container">
-                    <input type="password" id="api-token-${this.uniqueId}" placeholder="Enter your API token" autocomplete="off">
-                    <button type="button" id="reveal-token-${this.uniqueId}" class="reveal-button" aria-label="Toggle password visibility">👁️</button>
+                <div class="config-group">
+                    <label for="backend-url-${this.uniqueId}">Backend URL:</label>
+                    <input type="url" id="backend-url-${this.uniqueId}" placeholder="http://localhost:3000" autocomplete="off">
+                </div>
+                <div class="config-group">
+                    <label for="api-token-${this.uniqueId}">API Token:</label>
+                    <div class="token-input-container">
+                        <input type="password" id="api-token-${this.uniqueId}" placeholder="Enter your API token" autocomplete="off">
+                        <button type="button" id="reveal-token-${this.uniqueId}" class="reveal-button" aria-label="Toggle password visibility">👁️</button>
+                    </div>
                 </div>
                 <div class="button-group">
-                    <button type="submit" id="save-token-${this.uniqueId}" class="save-button">Save Token</button>
+                    <button type="submit" id="save-token-${this.uniqueId}" class="save-button">Save Configuration</button>
                     <button type="button" id="reset-token-${this.uniqueId}" class="reset-button">Reset</button>
                 </div>
                 <div id="current-token-status-${this.uniqueId}"></div>
@@ -39,40 +46,37 @@ class ConfigPanel {
 
     private initializeElements(): void {
         this.tokenInput = this.panel.querySelector(`#api-token-${this.uniqueId}`) as HTMLInputElement;
+        this.backendUrlInput = this.panel.querySelector(`#backend-url-${this.uniqueId}`) as HTMLInputElement;
         this.saveButton = this.panel.querySelector(`#save-token-${this.uniqueId}`) as HTMLButtonElement;
         this.tokenStatus = this.panel.querySelector(`#current-token-status-${this.uniqueId}`) as HTMLElement;
         this.revealButton = this.panel.querySelector(`#reveal-token-${this.uniqueId}`) as HTMLButtonElement;
-        const resetButton = this.panel.querySelector(`#reset-token-${this.uniqueId}`) as HTMLButtonElement;
 
-        // Set initial value if token exists
+        // Set initial values if they exist
         const existingToken = tokenStorage.getToken();
         if (existingToken) {
             this.tokenInput.value = existingToken;
         }
 
-        // Add reset button functionality
-        resetButton.addEventListener('click', () => {
-            const storedToken = tokenStorage.getToken();
-            if (storedToken) {
-                this.tokenInput.value = storedToken;
-                this.hasUnsavedChanges = false;
-                this.updateSaveButtonState();
-                this.showSuccess('Token reset to saved value');
-            } else {
-                this.showError('No saved token found');
-            }
-        });
+        const existingBackendUrl = tokenStorage.getBackendUrl();
+        if (existingBackendUrl) {
+            this.backendUrlInput.value = existingBackendUrl;
+        }
     }
 
     private initializeEventListeners(): void {
         // Track input changes
-        this.tokenInput.addEventListener('input', (e) => {
+        const handleInputChange = (e: Event) => {
             e.stopPropagation();
             const currentToken = tokenStorage.getToken();
+            const currentBackendUrl = tokenStorage.getBackendUrl();
             const newToken = this.tokenInput.value.trim();
-            this.hasUnsavedChanges = currentToken !== newToken;
+            const newBackendUrl = this.backendUrlInput.value.trim();
+            this.hasUnsavedChanges = currentToken !== newToken || currentBackendUrl !== newBackendUrl;
             this.updateSaveButtonState();
-        });
+        };
+
+        this.tokenInput.addEventListener('input', handleInputChange);
+        this.backendUrlInput.addEventListener('input', handleInputChange);
 
         // Handle focus events
         this.tokenInput.addEventListener('focus', (e) => {
@@ -101,14 +105,40 @@ class ConfigPanel {
             e.preventDefault();
             e.stopPropagation();
             const token = this.tokenInput.value.trim();
+            const backendUrl = this.backendUrlInput.value.trim();
+
+            if (!backendUrl) {
+                this.showError('Please enter a backend URL');
+                return;
+            }
+
             if (token) {
                 tokenStorage.setToken(token);
+                tokenStorage.setBackendUrl(backendUrl);
                 this.hasUnsavedChanges = false;
                 this.updateSaveButtonState();
-                this.showSuccess('Token saved successfully');
+                this.showSuccess('Configuration saved successfully');
             } else {
                 this.showError('Please enter a token');
             }
+        });
+
+        // Add reset button functionality
+        const resetButton = this.panel.querySelector(`#reset-token-${this.uniqueId}`) as HTMLButtonElement;
+        resetButton.addEventListener('click', () => {
+            const storedToken = tokenStorage.getToken();
+            const storedBackendUrl = tokenStorage.getBackendUrl();
+            
+            if (storedToken) {
+                this.tokenInput.value = storedToken;
+            }
+            if (storedBackendUrl) {
+                this.backendUrlInput.value = storedBackendUrl;
+            }
+            
+            this.hasUnsavedChanges = false;
+            this.updateSaveButtonState();
+            this.showSuccess('Configuration reset to saved values');
         });
     }
 
@@ -118,7 +148,7 @@ class ConfigPanel {
             this.saveButton.textContent = 'Save Changes';
         } else {
             this.saveButton.classList.remove('has-changes');
-            this.saveButton.textContent = 'Save Token';
+            this.saveButton.textContent = 'Save Configuration';
         }
     }
 

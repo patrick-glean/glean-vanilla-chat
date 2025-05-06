@@ -167,7 +167,6 @@ body {
 .token-input-container {
     display: flex;
     gap: 8px;
-    margin: 10px 0;
     width: 100%;
     position: relative;
     z-index: 1;
@@ -268,7 +267,7 @@ body {
 .config-section {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 16px;
     padding: 16px;
     background: #f8f9fa;
     border-radius: 8px;
@@ -337,4 +336,39 @@ input[type="password"] {
     caret-width: 2px;
     -webkit-text-security: none; /* Remove default password dots */
     text-security: none;
+}
+
+.config-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.config-group label {
+    font-weight: 500;
+    color: #333;
+    font-size: 14px;
+}
+
+.config-group input[type="url"] {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    background: #fff;
+    color: #333;
+    caret-color: #000;
+    caret-width: 2px;
+    box-sizing: border-box;
+}
+
+.config-group input[type="url"]:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.config-group input[type="url"]::placeholder {
+    color: #6c757d;
 } 
