@@ -6,13 +6,35 @@ interface ApiResponse<T> {
     status: number;
 }
 
-interface ChatMessage {
-    author: 'USER' | 'ASSISTANT';
-    fragments: Array<{ text: string }>;
+export interface StructuredResult {
+    document?: {
+        title?: string;
+        id?: string;
+        url?: string;
+    };
+}
+
+export interface Fragment {
+    text?: string;
+    structuredResults?: StructuredResult[];
+    querySuggestion?: {
+        query: string;
+        datasource: string;
+    };
+}
+
+export interface ChatMessage {
+    author: 'USER' | 'ASSISTANT' | 'GLEAN_AI';
+    fragments: Fragment[];
+    messageId?: string;
+    messageType?: string;
+    stepId?: string;
+    workflowId?: string;
+    isStepComplete?: boolean;
 }
 
 interface ChatRequest {
-    stream: boolean;
+    stream: true;
     messages: ChatMessage[];
 }
 
@@ -27,7 +49,8 @@ const DEBUG_PREFIX = '🔍 API Debug:';
 
 export async function apiCall<T>(
     endpoint: string,
-    options: RequestInit = {}
+    options: RequestInit = {},
+    onStreamMessage?: (message: ChatMessage) => void
 ): Promise<ApiResponse<T>> {
     const backendUrl = tokenStorage.getBackendUrl();
     const token = tokenStorage.getToken();
@@ -80,14 +103,20 @@ export async function apiCall<T>(
         }
 
         // Handle streaming response (multiple JSON objects)
-        const messages: any[] = [];
+        const messages: ChatMessage[] = [];
         const lines = rawText.split('\n').filter(line => line.trim());
         
         for (const line of lines) {
             try {
                 const message = JSON.parse(line);
                 if (message.messages) {
-                    messages.push(...message.messages);
+                    const newMessages = message.messages as ChatMessage[];
+                    messages.push(...newMessages);
+                    
+                    // Emit each message as it comes in
+                    if (onStreamMessage) {
+                        newMessages.forEach(msg => onStreamMessage(msg));
+                    }
                 }
             } catch (parseError) {
                 console.warn('Failed to parse line:', line);

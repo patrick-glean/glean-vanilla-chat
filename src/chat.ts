@@ -1,5 +1,6 @@
 import { apiCall, createChatRequest } from './utils/api.js';
 import { MessageManager, Message } from './components/message-manager.js';
+import type { ChatMessage, Fragment, StructuredResult } from './utils/api.js';
 
 class ChatApp {
     private messagesContainer: HTMLElement;
@@ -51,16 +52,38 @@ class ChatApp {
         try {
             // Send to Glean API
             const chatRequest = createChatRequest(message);
-            const response = await apiCall<{ 
-                author: string;
-                fragments: Array<{ text: string }>;
-                messageId: string;
-                messageType: string;
-                stepId: string;
-                workflowId: string;
-            }>('/chat', {
+            const response = await apiCall<ChatMessage>('/chat', {
                 method: 'POST',
                 body: JSON.stringify(chatRequest)
+            }, (streamMessage: ChatMessage) => {
+                // Handle each message as it streams in
+                let content = '';
+                
+                // Handle different types of fragments
+                if (streamMessage.fragments) {
+                    content = streamMessage.fragments
+                        .map((f: Fragment) => {
+                            if (f.text) return f.text;
+                            if (f.structuredResults) {
+                                return f.structuredResults
+                                    .map((r: StructuredResult) => r.document?.title)
+                                    .filter(Boolean)
+                                    .join(', ');
+                            }
+                            return '';
+                        })
+                        .filter(Boolean)
+                        .join('');
+                }
+
+                if (content) {
+                    this.messageManager.addMessage({
+                        role: 'assistant',
+                        content,
+                        source: 'glean',
+                        status: 'sent'
+                    });
+                }
             });
 
             // Update user message status
@@ -70,20 +93,6 @@ class ChatApp {
 
             if (response.error) {
                 throw new Error(response.error);
-            }
-
-            // Add assistant response to buffer
-            if (response.data?.fragments) {
-                const content = response.data.fragments
-                    .map(f => f.text)
-                    .join('');
-                
-                this.messageManager.addMessage({
-                    role: 'assistant',
-                    content,
-                    source: 'glean',
-                    status: 'sent'
-                });
             }
         } catch (error) {
             console.error('Error sending message:', error);
