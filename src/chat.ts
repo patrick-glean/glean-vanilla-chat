@@ -1,119 +1,121 @@
-import { Message } from './types.js';
-import tokenManager from './token.js';
+import { apiCall, createChatRequest } from './utils/api.js';
+import { MessageManager, Message } from './components/message-manager.js';
 
 class ChatApp {
     private messagesContainer: HTMLElement;
-    private inputField: HTMLInputElement;
+    private messageInput: HTMLInputElement;
     private sendButton: HTMLButtonElement;
-    private messageHistory: Message[] = [];
+    private messageManager: MessageManager;
 
     constructor() {
-        // Get DOM elements
         this.messagesContainer = document.getElementById('messages') as HTMLElement;
-        if (!this.messagesContainer) {
-            throw new Error('Messages container not found');
-        }
-
-        this.inputField = document.getElementById('message-input') as HTMLInputElement;
-        if (!this.inputField) {
-            throw new Error('Message input not found');
-        }
-
+        this.messageInput = document.getElementById('message-input') as HTMLInputElement;
         this.sendButton = document.getElementById('send-button') as HTMLButtonElement;
-        if (!this.sendButton) {
-            throw new Error('Send button not found');
-        }
+        this.messageManager = new MessageManager();
 
-        this.initializeChat();
-        this.showWelcomeMessage();
+        this.initializeEventListeners();
+        this.initializeMessageSubscription();
     }
 
-    private showWelcomeMessage() {
-        const welcomeMessage: Message = {
-            text: 'Welcome to the Chat! Please enter your API token in the configuration panel to get started.',
-            sender: 'bot',
-            timestamp: Date.now()
-        };
-        this.addMessageToUI(welcomeMessage);
-    }
-
-    private async initializeChat() {
-        // Clear input on focus
-        this.inputField.addEventListener('focus', () => {
-            if (this.inputField.value === '') {
-                this.inputField.placeholder = '';
-            }
-        });
-
-        this.inputField.addEventListener('blur', () => {
-            if (this.inputField.value === '') {
-                this.inputField.placeholder = 'Type your message...';
-            }
-        });
-
-        this.inputField.addEventListener('keypress', async (e) => {
-            if (e.key === 'Enter' && this.inputField.value.trim()) {
-                await this.sendMessage(this.inputField.value);
-                this.inputField.value = '';
-                this.inputField.placeholder = 'Type your message...';
-            }
-        });
-
-        this.sendButton.addEventListener('click', async () => {
-            if (this.inputField.value.trim()) {
-                await this.sendMessage(this.inputField.value);
-                this.inputField.value = '';
-                this.inputField.placeholder = 'Type your message...';
+    private initializeEventListeners(): void {
+        this.sendButton.addEventListener('click', () => this.handleSendMessage());
+        this.messageInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                this.handleSendMessage();
             }
         });
     }
 
-    private async sendMessage(text: string) {
-        const token = tokenManager.getToken();
-        if (!token) {
-            this.showError('Please enter your API token first');
-            return;
-        }
+    private initializeMessageSubscription(): void {
+        this.messageManager.subscribe(messages => {
+            this.renderMessages(messages);
+        });
+    }
 
-        const userMessage: Message = {
-            text,
-            sender: 'user',
-            timestamp: Date.now()
-        };
+    private async handleSendMessage(): Promise<void> {
+        const message = this.messageInput.value.trim();
+        if (!message) return;
 
-        this.addMessageToUI(userMessage);
-        this.messageHistory.push(userMessage);
+        // Clear input
+        this.messageInput.value = '';
+
+        // Add user message to buffer
+        const userMessage = this.messageManager.addMessage({
+            role: 'user',
+            content: message,
+            source: 'glean',
+            status: 'sending'
+        });
 
         try {
-            // TODO: Implement API service with token
-            const botMessage: Message = {
-                text: `Echo: ${text}`,
-                sender: 'bot',
-                timestamp: Date.now()
-            };
-            this.messageHistory.push(botMessage);
-            this.addMessageToUI(botMessage);
+            // Send to Glean API
+            const chatRequest = createChatRequest(message);
+            const response = await apiCall<{ 
+                author: string;
+                fragments: Array<{ text: string }>;
+                messageId: string;
+                messageType: string;
+                stepId: string;
+                workflowId: string;
+            }>('/chat', {
+                method: 'POST',
+                body: JSON.stringify(chatRequest)
+            });
+
+            // Update user message status
+            this.messageManager.updateMessage(userMessage.id, {
+                status: response.error ? 'error' : 'sent'
+            });
+
+            if (response.error) {
+                throw new Error(response.error);
+            }
+
+            // Add assistant response to buffer
+            if (response.data?.fragments) {
+                const content = response.data.fragments
+                    .map(f => f.text)
+                    .join('');
+                
+                this.messageManager.addMessage({
+                    role: 'assistant',
+                    content,
+                    source: 'glean',
+                    status: 'sent'
+                });
+            }
         } catch (error) {
-            this.showError('An error occurred while sending the message');
+            console.error('Error sending message:', error);
+            // Update user message status to error
+            this.messageManager.updateMessage(userMessage.id, {
+                status: 'error'
+            });
+            
+            // Add error message to chat
+            this.messageManager.addMessage({
+                role: 'system',
+                content: `Error: ${error instanceof Error ? error.message : 'Failed to send message'}`,
+                source: 'system',
+                status: 'error'
+            });
         }
     }
 
-    private addMessageToUI(message: Message) {
-        const messageElement = document.createElement('div');
-        messageElement.className = `message ${message.sender}`;
-        messageElement.textContent = message.text;
-        this.messagesContainer.appendChild(messageElement);
+    private renderMessages(messages: Message[]): void {
+        this.messagesContainer.innerHTML = '';
+        messages.forEach(message => {
+            const messageElement = document.createElement('div');
+            messageElement.className = `message ${message.role}${message.status === 'error' ? ' error' : ''}`;
+            messageElement.textContent = message.content;
+            if (message.status === 'sending') {
+                messageElement.className += ' sending';
+            }
+            this.messagesContainer.appendChild(messageElement);
+        });
         this.messagesContainer.scrollTop = this.messagesContainer.scrollHeight;
-    }
-
-    private showError(message: string) {
-        const errorElement = document.createElement('div');
-        errorElement.className = 'error-message';
-        errorElement.textContent = message;
-        this.messagesContainer.appendChild(errorElement);
-        setTimeout(() => errorElement.remove(), 3000);
     }
 }
 
 // Initialize chat app
-new ChatApp(); 
+const chatApp = new ChatApp(); 

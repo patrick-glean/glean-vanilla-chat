@@ -63,11 +63,12 @@ body {
 }
 
 .message {
-    margin: 8px;
+    margin: 8px 0;
     padding: 8px 12px;
     border-radius: 8px;
     max-width: 80%;
     word-wrap: break-word;
+    position: relative;
 }
 
 .message.user {
@@ -76,10 +77,42 @@ body {
     margin-left: auto;
 }
 
-.message.bot {
-    background-color: #f1f1f1;
+.message.assistant {
+    background-color: #f0f0f0;
     color: black;
     margin-right: auto;
+}
+
+.message.system {
+    background-color: #e9ecef;
+    color: #495057;
+    margin: 16px auto;
+    text-align: center;
+    font-style: italic;
+    max-width: 90%;
+}
+
+.message.error {
+    background-color: #dc3545;
+    color: white;
+}
+
+.message.sending {
+    opacity: 0.7;
+}
+
+.message.sending::after {
+    content: '...';
+    position: absolute;
+    right: -20px;
+    animation: ellipsis 1.5s infinite;
+}
+
+@keyframes ellipsis {
+    0% { content: '.'; }
+    33% { content: '..'; }
+    66% { content: '...'; }
+    100% { content: '.'; }
 }
 
 .error-message {
