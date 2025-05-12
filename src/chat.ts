@@ -150,7 +150,14 @@ class ChatApp {
         // Scroll to bottom
         this.messagesContainer.scrollTop = this.messagesContainer.scrollHeight;
     }
+
+    public getMessageManager(): MessageManager {
+        return this.messageManager;
+    }
 }
 
 // Initialize chat app
-const chatApp = new ChatApp(); 
+const chatApp = new ChatApp();
+
+// Expose message manager for other components
+(window as any).messageManager = chatApp.getMessageManager(); 

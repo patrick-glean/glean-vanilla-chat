@@ -1,10 +1,14 @@
+import { MessageManager } from './message-manager.js';
+
 export class MockManager {
     private messageInput: HTMLTextAreaElement;
     private sendButton: HTMLButtonElement;
+    private messageManager: MessageManager;
 
-    constructor() {
+    constructor(messageManager: MessageManager) {
         this.messageInput = document.getElementById('mock-message') as HTMLTextAreaElement;
-        this.sendButton = document.getElementById('send-mock-message') as HTMLButtonElement;
+        this.sendButton = document.getElementById('send-mock') as HTMLButtonElement;
+        this.messageManager = messageManager;
         
         this.initializeEventListeners();
     }
@@ -26,8 +30,13 @@ export class MockManager {
         const message = this.messageInput.value.trim();
         if (!message) return;
 
-        // Log message to console
-        console.log('Mock Message:', message);
+        // Add message to chat
+        this.messageManager.addMessage({
+            role: 'assistant',
+            content: message,
+            source: 'other',
+            status: 'sent'
+        });
 
         // Clear input
         this.messageInput.value = '';
