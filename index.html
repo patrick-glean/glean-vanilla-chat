@@ -13,6 +13,24 @@
     <!-- Token Manager Container -->
     <div id="token-manager-container"></div>
     
+    <!-- Mock Container -->
+    <div id="mock-container">
+        <div class="mock-panel">
+            <h3>Mock Message</h3>
+            <div class="mock-form">
+                <div class="form-group">
+                    <label for="mock-name">Name:</label>
+                    <input type="text" id="mock-name" placeholder="Enter name">
+                </div>
+                <div class="form-group">
+                    <label for="mock-message">Message:</label>
+                    <textarea id="mock-message" placeholder="Enter message"></textarea>
+                </div>
+                <button id="send-mock">Send as Agent</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Chat Application Container -->
     <div id="chat-container">
         <div id="messages"></div>
@@ -24,6 +42,7 @@
 
     <!-- Load modules separately -->
     <script type="module" src="token.js?v=1.0.0"></script>
+    <script type="module" src="mock.js?v=1.0.0"></script>
     <script type="module" src="chat.js?v=1.0.0"></script>
 </body>
 </html> 

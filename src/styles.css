@@ -10,16 +10,26 @@ body {
     position: relative;
 }
 
-#token-manager-container {
+#token-manager-container,
+#mock-container {
     position: fixed;
     left: 20px;
-    top: 50%;
-    transform: translateY(-50%);
     width: 300px;
     z-index: 100;
 }
 
-.config-panel {
+#token-manager-container {
+    top: 50%;
+    transform: translateY(-120%); /* Move up by half the height */
+}
+
+#mock-container {
+    top: 50%;
+    transform: translateY(20%); /* Move down by half the height */
+}
+
+.config-panel,
+.mock-panel {
     background: white;
     padding: 20px;
     border-radius: 8px;
@@ -28,7 +38,8 @@ body {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.config-panel:hover {
+.config-panel:hover,
+.mock-panel:hover {
     transform: translateX(5px);
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
 }
@@ -406,4 +417,50 @@ input[type="password"] {
 
 .config-group input[type="url"]::placeholder {
     color: #6c757d;
+}
+
+.config-form,
+.mock-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-group label {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.form-group input,
+.form-group textarea {
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 0.9rem;
+}
+
+.form-group textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+button {
+    padding: 0.5rem 1rem;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.2s;
+}
+
+button:hover {
+    background-color: #0056b3;
 } 
