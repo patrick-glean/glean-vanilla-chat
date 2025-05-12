@@ -9,13 +9,13 @@ src/
 ├── components/           # UI Components
 │   ├── config-panel.ts   # Token configuration UI
 │   ├── message-manager.ts # Message buffer and history management
+│   ├── mock-manager.ts   # Mock message testing panel
 │   └── token-storage.ts  # Token storage management
 ├── utils/               # Utility Functions
 │   └── api.ts          # API communication with streaming support
 ├── chat.ts             # Main chat application
 ├── token.ts            # Token manager initialization
-├── types.ts            # Shared TypeScript types
-├── config.ts           # Application configuration
+├── mock.ts             # Mock panel initialization
 └── styles.css          # Global styles
 ```
 
@@ -28,6 +28,15 @@ src/
 - Message source tracking (glean, other, system)
 - Event-based message updates
 - Real-time streaming message support
+- Intelligent fragment formatting based on content type
+- Proper message accumulation for streaming responses
+
+### Mock Testing Panel
+- `MockManager`: Handles mock message testing
+- Shared message manager instance
+- Proper component initialization
+- Support for testing different message types
+- Easy integration with main chat interface
 
 ### Token Management
 - `TokenStorage`: Handles token persistence in localStorage
@@ -40,10 +49,8 @@ src/
 - Real-time message updates with status indicators
 - Streaming message support for immediate feedback
 - Support for structured results and document references
-
-### Configuration
-- `config.ts`: Centralized configuration management
-- `types.ts`: Shared TypeScript interfaces and types
+- Intelligent message fragment handling
+- Content-type aware formatting
 
 ## Development
 
@@ -73,6 +80,10 @@ npm run build
 - Immediate message updates
 - Support for structured results
 - Multiple message types and sources
+- Mock testing panel for development
+- Intelligent message formatting
+- Proper component initialization
+- Shared message management
 
 ## Notes
 - Token UI can be removed in production by removing the token-manager-container
@@ -83,6 +94,10 @@ npm run build
 - Supports real-time streaming API responses
 - Handles multiple message types and sources
 - Processes structured results and document references
+- Mock panel available for testing and development
+- Intelligent formatting based on content type
+- Proper component initialization sequence
+- Shared message manager for consistency
 
 ## Live Demo
 
@@ -101,6 +116,9 @@ Click the image above to try the live demo!
 - Hot reloading for development
 - Streaming message support
 - Structured result handling
+- Mock testing panel
+- Intelligent message formatting
+- Proper component initialization
 
 ## Deployment to GitHub Pages
 

@@ -5,42 +5,27 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 ### Added
-- Message buffer system for managing chat history
-- Support for multiple message types (user, assistant, system)
-- Real-time message status updates
-- Message source tracking (glean, other, system)
-- Event-based message update system
-- Streaming API support with proper error handling
-- Improved message parsing and display
-- Better error handling for malformed responses
-- Real-time streaming message support
-- Streaming message callback in API utility
-- Support for structured results and document references
-- Improved message fragment handling
-- Comprehensive TypeScript types for API responses
-- Real-time message updates in chat window
-- Better error handling for streaming responses
+- Mock message panel for testing and development
+- Intelligent message fragment formatting based on content type
+- Improved message streaming with proper content accumulation
+- Better handling of structured results and query suggestions
+- Shared message manager instance for consistent message handling
+- Proper initialization sequence for components
+- Component polling for dependency availability
 
 ### Changed
-- Moved API service to utils directory
-- Updated API call format to match Glean backend
-- Improved message handling with proper buffering
-- Enhanced error handling and user feedback
-- Updated documentation with new features
-- Updated API utility to handle streaming responses
-- Improved message processing in chat component
-- Enhanced TypeScript type definitions
-- Updated documentation with streaming features
+- Updated message formatting to be content-type aware
+- Improved message accumulation logic
+- Enhanced component initialization process
+- Better handling of streaming message fragments
+- Updated documentation with new features and learnings
 
 ### Fixed
-- Message parsing issues with streaming responses
-- Error handling for malformed API responses
-- Message status updates during streaming
-- API endpoint path construction
-- Token management issues
-- UI responsiveness
-- Error handling
-- Type safety
+- Message fragment formatting issues
+- Component initialization timing issues
+- Message manager sharing between components
+- Message accumulation and display
+- Newline handling in message fragments
 
 ## [0.1.0] - 2024-03-19
 

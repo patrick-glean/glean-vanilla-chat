@@ -80,7 +80,7 @@ class ChatApp {
                             // Handle formatting based on fragment type
                             if (fragment.structuredResults) {
                                 // Add a newline before structured results
-                                accumulatedContent += (accumulatedContent ? '\n' : '') + newContent;
+                                accumulatedContent += newContent + '\n';
                             } else if (fragment.querySuggestion) {
                                 // Add a newline before query suggestions
                                 accumulatedContent += (accumulatedContent ? '\n' : '') + newContent;

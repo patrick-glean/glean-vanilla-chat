@@ -48,7 +48,7 @@ body {
     display: flex;
     flex-direction: column;
     height: 600px;
-    width: 400px;
+    width: 500px;
     background: white;
     border-radius: 8px;
     overflow: hidden;
@@ -88,12 +88,14 @@ body {
     background-color: #007bff;
     color: white;
     margin-left: auto;
+    margin-right: 8px; /* Add some space from the right edge */
 }
 
 .message.assistant {
     background-color: #f0f0f0;
     color: black;
     margin-right: auto;
+    margin-left: 8px; /* Add some space from the left edge */
 }
 
 .message.system {
