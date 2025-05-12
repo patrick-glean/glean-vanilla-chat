@@ -135,6 +135,7 @@ export async function apiCall<T>(
                             });
                         } else {
                             console.log('No fragments');
+                            console.log('Message:', message);
                         }
                         console.groupEnd();
                         
