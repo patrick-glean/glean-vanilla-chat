@@ -52,6 +52,45 @@ src/
 - Intelligent message fragment handling
 - Content-type aware formatting
 
+## Key Features
+- Modular architecture with clear separation of concerns
+- TypeScript for type safety
+- Token management with secure storage
+- Responsive UI with proper styling
+- Error handling and user feedback
+- Message buffering system
+- Real-time streaming API support
+- Immediate message updates
+- Support for structured results
+- Multiple message types and sources
+- Mock testing panel for development
+- Intelligent message formatting
+- Proper component initialization
+- Shared message management
+
+## API Proxy & Deployment Notes
+
+### Using a Middleware Proxy
+- **GitHub Pages is static-only**: It cannot run server-side code (like a proxy or middleware).
+- If your chat app needs to call a backend API (e.g., to hide API keys, handle CORS, or add authentication), you **must deploy your proxy/middleware to a separate service** (such as Vercel, Netlify, Cloudflare Workers, etc.).
+- Update your frontend code to call the deployed proxy endpoint (e.g., `https://your-proxy-service.com/api/chat`).
+- **Do not put API keys or secrets in the frontend code.**
+
+### Example Proxy Setup
+1. Deploy your proxy/middleware to a serverless platform.
+2. Set the proxy URL in your frontend configuration or code.
+3. For local development, you can run the proxy locally and point your frontend to `http://localhost:PORT`.
+
+### GitHub Pages Deployment
+- To deploy the static frontend:
+    1. Make sure you have committed all your changes
+    2. Run:
+    ```bash
+    npm run deploy
+    ```
+    3. Your site will be available at: `https://<your-username>.github.io/glean-vanilla-chat/`
+- **Note:** The frontend must call an external proxy for API requests.
+
 ## Development
 
 ### Setup
@@ -69,35 +108,22 @@ npm run dev
 npm run build
 ```
 
-## Key Features
-- Modular architecture with clear separation of concerns
-- TypeScript for type safety
-- Token management with secure storage
-- Responsive UI with proper styling
-- Error handling and user feedback
-- Message buffering system
-- Real-time streaming API support
-- Immediate message updates
-- Support for structured results
-- Multiple message types and sources
-- Mock testing panel for development
-- Intelligent message formatting
-- Proper component initialization
-- Shared message management
+## Embedding the Chat
 
-## Notes
-- Token UI can be removed in production by removing the token-manager-container
-- API token is stored securely in localStorage
-- All components are properly typed with TypeScript
-- Build process handles TypeScript compilation and file copying
-- Messages are buffered for history and state management
-- Supports real-time streaming API responses
-- Handles multiple message types and sources
-- Processes structured results and document references
-- Mock panel available for testing and development
-- Intelligent formatting based on content type
-- Proper component initialization sequence
-- Shared message manager for consistency
+To embed the chat in your website, add the following to your HTML:
+
+```html
+<div id="glean-chat-container"></div>
+<script type="module" src="https://patrick-glean.github.io/glean-vanilla-chat/index.js"></script>
+```
+
+## Further Development & Contribution
+
+- For detailed development, code style, and contribution rules, see [RULES.md](./RULES.md).
+
+## License
+
+This project is licensed under the terms of the LICENSE file in the root of this repository.
 
 ## Live Demo
 
