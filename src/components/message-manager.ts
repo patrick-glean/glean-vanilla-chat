@@ -4,12 +4,12 @@ export interface Message {
     content: string;
     timestamp: number;
     status?: 'sending' | 'sent' | 'error';
-    source?: 'glean' | 'other' | 'system';  // Added 'system' as a valid source
+    source?: 'glean' | 'other' | 'system';
 }
 
 export class MessageManager {
     private messages: Message[] = [];
-    private listeners: Set<(messages: Message[]) => void> = new Set();
+    private onUpdate: ((messages: Message[]) => void) | null = null;
 
     constructor() {
         // Add welcome message
@@ -27,7 +27,7 @@ export class MessageManager {
             timestamp: Date.now()
         };
         this.messages.push(newMessage);
-        this.notifyListeners();
+        this.notifyUpdate();
         return newMessage;
     }
 
@@ -35,7 +35,7 @@ export class MessageManager {
         const index = this.messages.findIndex(m => m.id === id);
         if (index !== -1) {
             this.messages[index] = { ...this.messages[index], ...updates };
-            this.notifyListeners();
+            this.notifyUpdate();
         }
     }
 
@@ -43,25 +43,20 @@ export class MessageManager {
         return [...this.messages];
     }
 
-    public getMessageHistory(): Message[] {
-        return this.messages.filter(m => m.role !== 'system');
+    public setUpdateCallback(callback: (messages: Message[]) => void): void {
+        this.onUpdate = callback;
+        // Immediately notify with current state
+        callback(this.getMessages());
     }
 
-    public subscribe(listener: (messages: Message[]) => void): () => void {
-        this.listeners.add(listener);
-        // Immediately notify the new listener of current state
-        listener(this.getMessages());
-        // Return unsubscribe function
-        return () => this.listeners.delete(listener);
-    }
-
-    private notifyListeners(): void {
-        const messages = this.getMessages();
-        this.listeners.forEach(listener => listener(messages));
+    private notifyUpdate(): void {
+        if (this.onUpdate) {
+            this.onUpdate(this.getMessages());
+        }
     }
 
     public clear(): void {
         this.messages = [];
-        this.notifyListeners();
+        this.notifyUpdate();
     }
 } 

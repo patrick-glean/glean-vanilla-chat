@@ -29,7 +29,7 @@ class ChatApp {
     }
 
     private initializeMessageSubscription(): void {
-        this.messageManager.subscribe(messages => {
+        this.messageManager.setUpdateCallback(messages => {
             this.renderMessages(messages);
         });
     }
@@ -41,7 +41,7 @@ class ChatApp {
         // Clear input
         this.messageInput.value = '';
 
-        // Add user message to buffer
+        // Add user message
         const userMessage = this.messageManager.addMessage({
             role: 'user',
             content: message,
@@ -52,36 +52,50 @@ class ChatApp {
         try {
             // Send to Glean API
             const chatRequest = createChatRequest(message);
+            let currentAssistantMessage: Message | undefined;
+
             const response = await apiCall<ChatMessage>('/chat', {
                 method: 'POST',
                 body: JSON.stringify(chatRequest)
             }, (streamMessage: ChatMessage) => {
                 // Handle each message as it streams in
-                let content = '';
-                
-                // Handle different types of fragments
-                if (streamMessage.fragments) {
-                    content = streamMessage.fragments
-                        .map((f: Fragment) => {
-                            if (f.text) return f.text;
-                            if (f.structuredResults) {
-                                return f.structuredResults
-                                    .map((r: StructuredResult) => r.document?.title)
-                                    .filter(Boolean)
-                                    .join(', ');
-                            }
-                            return '';
-                        })
-                        .filter(Boolean)
-                        .join('');
-                }
+                if (streamMessage.fragments && streamMessage.fragments.length > 0) {
+                    // Process each fragment
+                    streamMessage.fragments.forEach((fragment: Fragment) => {
+                        let newContent = '';
+                        
+                        if (fragment.text) {
+                            newContent = fragment.text;
+                        } else if (fragment.structuredResults) {
+                            newContent = fragment.structuredResults
+                                .map((r: StructuredResult) => r.document?.title)
+                                .filter(Boolean)
+                                .join(', ');
+                        } else if (fragment.querySuggestion) {
+                            newContent = fragment.querySuggestion.query;
+                        }
 
-                if (content) {
-                    this.messageManager.addMessage({
-                        role: 'assistant',
-                        content,
-                        source: 'glean',
-                        status: 'sent'
+                        if (newContent) {
+                            if (!currentAssistantMessage) {
+                                // Create new message if this is the first fragment
+                                currentAssistantMessage = this.messageManager.addMessage({
+                                    role: 'assistant',
+                                    content: newContent,
+                                    source: 'glean',
+                                    status: 'sending'
+                                });
+                            } else {
+                                // Update existing message with new content
+                                const updatedContent = currentAssistantMessage.content + 
+                                    (currentAssistantMessage.content ? '\n' : '') + 
+                                    newContent;
+                                
+                                this.messageManager.updateMessage(currentAssistantMessage.id, {
+                                    content: updatedContent,
+                                    status: 'sending'
+                                });
+                            }
+                        }
                     });
                 }
             });
@@ -91,11 +105,17 @@ class ChatApp {
                 status: response.error ? 'error' : 'sent'
             });
 
+            // Update final assistant message status
+            if (currentAssistantMessage) {
+                this.messageManager.updateMessage(currentAssistantMessage.id, {
+                    status: 'sent'
+                });
+            }
+
             if (response.error) {
                 throw new Error(response.error);
             }
         } catch (error) {
-            console.error('Error sending message:', error);
             // Update user message status to error
             this.messageManager.updateMessage(userMessage.id, {
                 status: 'error'
@@ -116,12 +136,18 @@ class ChatApp {
         messages.forEach(message => {
             const messageElement = document.createElement('div');
             messageElement.className = `message ${message.role}${message.status === 'error' ? ' error' : ''}`;
+            
+            // Use textContent for plain text, but preserve line breaks
             messageElement.textContent = message.content;
+            
             if (message.status === 'sending') {
                 messageElement.className += ' sending';
             }
+            
             this.messagesContainer.appendChild(messageElement);
         });
+        
+        // Scroll to bottom
         this.messagesContainer.scrollTop = this.messagesContainer.scrollHeight;
     }
 }

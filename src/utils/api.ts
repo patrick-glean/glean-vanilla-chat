@@ -75,13 +75,15 @@ export async function apiCall<T>(
     console.group(`${DEBUG_PREFIX} Request`);
     console.log('URL:', url);
     console.log('Method:', options.method || 'GET');
-    console.log('Headers:', Object.fromEntries(headers.entries()));
     if (options.body) {
         try {
             const body = JSON.parse(options.body as string);
-            console.log('Body:', body);
+            // Log user message if present
+            if (body.messages?.[0]?.fragments?.[0]?.text) {
+                console.log('📝 User Message:', body.messages[0].fragments[0].text);
+            }
         } catch (e) {
-            console.log('Body:', options.body);
+            console.log('❌ Invalid request body');
         }
     }
     console.groupEnd();
@@ -89,58 +91,75 @@ export async function apiCall<T>(
     try {
         const response = await fetch(url, requestOptions);
         
-        // Log raw response details
-        console.group(`${DEBUG_PREFIX} Response`);
-        console.log('Status:', response.status);
-        console.log('Headers:', Object.fromEntries(response.headers.entries()));
+        // Log response status
+        console.log(`${DEBUG_PREFIX} Response Status:`, response.status);
         
-        // Get the raw text
-        const rawText = await response.text();
-        console.log('Raw response:', rawText);
-
         if (!response.ok) {
             throw new ApiError(response.status, 'API request failed');
         }
 
         // Handle streaming response (multiple JSON objects)
         const messages: ChatMessage[] = [];
+        const rawText = await response.text();
         const lines = rawText.split('\n').filter(line => line.trim());
+        
+        console.log(`${DEBUG_PREFIX} Processing ${lines.length} response lines`);
         
         for (const line of lines) {
             try {
-                const message = JSON.parse(line);
-                if (message.messages) {
-                    const newMessages = message.messages as ChatMessage[];
-                    messages.push(...newMessages);
-                    
-                    // Emit each message as it comes in
-                    if (onStreamMessage) {
-                        newMessages.forEach(msg => onStreamMessage(msg));
-                    }
+                const data = JSON.parse(line);
+                
+                if (data.messages && Array.isArray(data.messages)) {
+                    // Process each message in the array
+                    data.messages.forEach((message: ChatMessage) => {
+                        messages.push(message);
+                        
+                        // Log message details in a readable format
+                        console.group(`📨 Message from ${message.author}`);
+                        console.log(`ID: ${message.messageId || 'none'}`);
+                        
+                        if (message.fragments?.length) {
+                            console.log(`Fragments (${message.fragments.length}):`);
+                            message.fragments.forEach((f, i) => {
+                                if (f.text) {
+                                    console.log(`  ${i + 1}. Text: "${f.text}"`);
+                                } else if (f.structuredResults?.length) {
+                                    const titles = f.structuredResults
+                                        .map(r => r.document?.title)
+                                        .filter(Boolean)
+                                        .join(', ');
+                                    console.log(`  ${i + 1}. Structured: ${titles}`);
+                                } else if (f.querySuggestion) {
+                                    console.log(`  ${i + 1}. Suggestion: "${f.querySuggestion.query}"`);
+                                }
+                            });
+                        } else {
+                            console.log('No fragments');
+                        }
+                        console.groupEnd();
+                        
+                        // Emit each message as it comes in
+                        if (onStreamMessage) {
+                            onStreamMessage(message);
+                        }
+                    });
                 }
-            } catch (parseError) {
-                console.warn('Failed to parse line:', line);
+            } catch (parseError: unknown) {
+                console.warn(`❌ Failed to parse line: ${parseError instanceof Error ? parseError.message : 'Unknown parse error'}`);
             }
         }
 
         // Get the last message as the final response
         const lastMessage = messages[messages.length - 1];
-        console.log('Parsed messages:', messages);
-        console.groupEnd();
+        console.log(`${DEBUG_PREFIX} Total messages processed: ${messages.length}`);
 
         return {
             data: lastMessage as T,
             status: response.status,
         };
     } catch (error) {
-        // Log error details
-        console.group(`${DEBUG_PREFIX} Error`);
-        console.error('Error:', error);
-        if (error instanceof TypeError) {
-            console.error('Network Error Details:', error.message);
-        }
-        console.groupEnd();
-
+        console.error(`❌ Error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+        
         if (error instanceof ApiError) {
             return {
                 error: error.message,
