@@ -53,6 +53,7 @@ class ChatApp {
             // Send to Glean API
             const chatRequest = createChatRequest(message);
             let currentAssistantMessage: Message | undefined;
+            let accumulatedContent = '';
 
             const response = await apiCall<ChatMessage>('/chat', {
                 method: 'POST',
@@ -76,22 +77,21 @@ class ChatApp {
                         }
 
                         if (newContent) {
+                            // Accumulate content
+                            accumulatedContent += (accumulatedContent ? '\n' : '') + newContent;
+
                             if (!currentAssistantMessage) {
                                 // Create new message if this is the first fragment
                                 currentAssistantMessage = this.messageManager.addMessage({
                                     role: 'assistant',
-                                    content: newContent,
+                                    content: accumulatedContent,
                                     source: 'glean',
                                     status: 'sending'
                                 });
                             } else {
-                                // Update existing message with new content
-                                const updatedContent = currentAssistantMessage.content + 
-                                    (currentAssistantMessage.content ? '\n' : '') + 
-                                    newContent;
-                                
+                                // Update existing message with accumulated content
                                 this.messageManager.updateMessage(currentAssistantMessage.id, {
-                                    content: updatedContent,
+                                    content: accumulatedContent,
                                     status: 'sending'
                                 });
                             }
