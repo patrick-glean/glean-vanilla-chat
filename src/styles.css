@@ -20,8 +20,8 @@ body {
 }
 
 #token-manager-container {
-    top: 50%;
-    transform: translateY(-120%); /* Move up by half the height */
+    top: 40px;
+    transform: none;
 }
 
 #mock-container {
