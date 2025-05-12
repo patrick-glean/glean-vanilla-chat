@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <!-- Chat bubble background -->
-    <path d="M28 4H4C2.9 4 2 4.9 2 6V22C2 23.1 2.9 24 4 24H8L12 28L16 24H28C29.1 24 30 23.1 30 22V6C30 4.9 29.1 4 28 4Z" fill="#007BFF"/>
-    <!-- Chat bubble tail -->
-    <path d="M12 24L8 28L12 32L16 28H28C29.1 28 30 27.1 30 26V10C30 8.9 29.1 8 28 8H4C2.9 8 2 8.9 2 10V26C2 27.1 2.9 28 4 28H12V24Z" fill="#007BFF"/>
-</svg> 
