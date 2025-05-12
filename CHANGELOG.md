@@ -1,25 +1,72 @@
 # Changelog
 
+All notable changes to this project will be documented in this file.
+
 ## [Unreleased]
 
 ### Added
-- Modular project structure with clear separation of concerns
-- Token management system with secure storage
-- TypeScript type safety throughout the application
-- Proper error handling and user feedback
-- Responsive UI with improved styling
+- Message buffer system for managing chat history
+- Support for multiple message types (user, assistant, system)
+- Real-time message status updates
+- Message source tracking (glean, other, system)
+- Event-based message update system
+- Streaming API support with proper error handling
+- Improved message parsing and display
+- Better error handling for malformed responses
+- Real-time streaming message support
+- Streaming message callback in API utility
+- Support for structured results and document references
+- Improved message fragment handling
+- Comprehensive TypeScript types for API responses
+- Real-time message updates in chat window
+- Better error handling for streaming responses
 
 ### Changed
-- Restructured project into modular components
-- Improved build process for TypeScript compilation
-- Enhanced token input field visibility and styling
-- Updated module imports and exports for better organization
+- Moved API service to utils directory
+- Updated API call format to match Glean backend
+- Improved message handling with proper buffering
+- Enhanced error handling and user feedback
+- Updated documentation with new features
+- Updated API utility to handle streaming responses
+- Improved message processing in chat component
+- Enhanced TypeScript type definitions
+- Updated documentation with streaming features
 
 ### Fixed
-- Token input field visibility issues
-- Module import/export circular dependencies
-- Build process file copying
-- TypeScript compilation and type errors
+- Message parsing issues with streaming responses
+- Error handling for malformed API responses
+- Message status updates during streaming
+- API endpoint path construction
+- Token management issues
+- UI responsiveness
+- Error handling
+- Type safety
+
+## [0.1.0] - 2024-03-19
+
+### Added
+- Initial project setup with TypeScript
+- Modular project structure
+- Token management system
+- Basic chat interface
+- Configuration panel
+- Build system with npm scripts
+- TypeScript type safety
+- Error handling
+- Responsive UI
+- Documentation
+
+### Changed
+- Improved project organization
+- Enhanced error handling
+- Better type safety
+- More responsive UI
+
+### Fixed
+- Token management issues
+- UI responsiveness
+- Error handling
+- Type safety
 
 ## [Initial Setup]
 - Basic chat application structure

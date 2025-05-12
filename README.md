@@ -8,17 +8,26 @@ A vanilla JavaScript/TypeScript chat application with modular architecture.
 src/
 ├── components/           # UI Components
 │   ├── config-panel.ts   # Token configuration UI
+│   ├── message-manager.ts # Message buffer and history management
 │   └── token-storage.ts  # Token storage management
-├── services/            # Service Layer
-│   └── api.ts           # API communication service
-├── chat.ts              # Main chat application
-├── token.ts             # Token manager initialization
-├── types.ts             # Shared TypeScript types
-├── config.ts            # Application configuration
-└── styles.css           # Global styles
+├── utils/               # Utility Functions
+│   └── api.ts          # API communication with streaming support
+├── chat.ts             # Main chat application
+├── token.ts            # Token manager initialization
+├── types.ts            # Shared TypeScript types
+├── config.ts           # Application configuration
+└── styles.css          # Global styles
 ```
 
 ## Key Components
+
+### Message Management
+- `MessageManager`: Handles message buffering and history
+- Supports multiple message types (user, assistant, system)
+- Real-time message status updates
+- Message source tracking (glean, other, system)
+- Event-based message updates
+- Real-time streaming message support
 
 ### Token Management
 - `TokenStorage`: Handles token persistence in localStorage
@@ -27,7 +36,10 @@ src/
 
 ### Chat Application
 - `ChatApp`: Main chat interface and message handling
-- `ApiService`: Handles API communication with proper token management
+- `ApiService`: Handles API communication with streaming support
+- Real-time message updates with status indicators
+- Streaming message support for immediate feedback
+- Support for structured results and document references
 
 ### Configuration
 - `config.ts`: Centralized configuration management
@@ -56,12 +68,21 @@ npm run build
 - Token management with secure storage
 - Responsive UI with proper styling
 - Error handling and user feedback
+- Message buffering system
+- Real-time streaming API support
+- Immediate message updates
+- Support for structured results
+- Multiple message types and sources
 
 ## Notes
 - Token UI can be removed in production by removing the token-manager-container
 - API token is stored securely in localStorage
 - All components are properly typed with TypeScript
 - Build process handles TypeScript compilation and file copying
+- Messages are buffered for history and state management
+- Supports real-time streaming API responses
+- Handles multiple message types and sources
+- Processes structured results and document references
 
 ## Live Demo
 
@@ -78,6 +99,8 @@ Click the image above to try the live demo!
 - Responsive design
 - Easy embedding capability
 - Hot reloading for development
+- Streaming message support
+- Structured result handling
 
 ## Deployment to GitHub Pages
 
