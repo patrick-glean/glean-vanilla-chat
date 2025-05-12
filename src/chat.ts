@@ -77,8 +77,17 @@ class ChatApp {
                         }
 
                         if (newContent) {
-                            // Accumulate content
-                            accumulatedContent += (accumulatedContent ? '\n' : '') + newContent;
+                            // Handle formatting based on fragment type
+                            if (fragment.structuredResults) {
+                                // Add a newline before structured results
+                                accumulatedContent += (accumulatedContent ? '\n' : '') + newContent;
+                            } else if (fragment.querySuggestion) {
+                                // Add a newline before query suggestions
+                                accumulatedContent += (accumulatedContent ? '\n' : '') + newContent;
+                            } else {
+                                // For regular text, just append without newlines
+                                accumulatedContent += newContent;
+                            }
 
                             if (!currentAssistantMessage) {
                                 // Create new message if this is the first fragment
