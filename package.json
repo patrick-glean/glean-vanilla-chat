@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "build": "rm -rf dist/* && tsc && cp src/styles.css src/favicon.ico dist/ && cp index.html dist/ && node scripts/screenshot.js",
-    "dev": "nodemon --watch 'src/**/*.ts' --exec 'npm run build' & http-server dist --cors='*' --proxy https://support-lab-be.glean.com"
+    "dev": "nodemon --watch 'src/**/*.ts' --exec 'npm run build' & http-server dist --cors='*' --proxy https://support-lab-be.glean.com",
+    "deploy": "npm run build && git checkout -b gh-pages && git rm -rf . && mv dist/* . && git add . && git commit -m \"Deploy to GitHub Pages\" && git push origin gh-pages && git checkout main"
   },
   "dependencies": {
     "puppeteer": "^24.8.2"

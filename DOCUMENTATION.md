@@ -206,10 +206,15 @@ The application is designed for static hosting:
    npm run build
    ```
 
-2. Deployment:
+2. GitHub Pages Deployment:
    ```bash
    npm run deploy
    ```
+
+3. Configure GitHub Pages:
+   - Go to repository Settings > Pages
+   - Under "Source", select the `gh-pages` branch
+   - Your site will be available at: `https://<your-username>.github.io/glean-vanilla-chat/`
 
 ### API Proxy
 
