@@ -8,11 +8,11 @@
     "dev": "nodemon --watch 'src/**/*.ts' --exec 'npm run build' & http-server dist --cors='*' --proxy https://support-lab-be.glean.com"
   },
   "dependencies": {
-    "puppeteer": "^21.0.0"
+    "puppeteer": "^24.8.2"
   },
   "devDependencies": {
+    "http-server": "^14.0.0",
     "nodemon": "^3.0.0",
-    "typescript": "^5.0.0",
-    "http-server": "^14.0.0"
+    "typescript": "^5.0.0"
   }
-} 
+}
